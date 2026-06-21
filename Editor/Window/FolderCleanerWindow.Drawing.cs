@@ -27,15 +27,36 @@ namespace dennokoworks.FolderCleaner
         {
             GUILayout.BeginVertical();
 
-            DrawSection("フォルダ設定", DrawFolderSettings);
-            DrawSection("オプション", DrawOptions);
-            DrawSection("結果", DrawResults);
+            DrawSection("フォルダ設定", FolderSettingsHelp, DrawFolderSettings);
+            DrawSection("オプション", OptionsHelp, DrawOptions);
+            DrawSection("結果", ResultsHelp, DrawResults);
 
             GUILayout.EndVertical();
         }
 
+        // ─── セクションのヘルプ文（右上「？」のツールチップ） ──────────────────
+        private const string FolderSettingsHelp =
+            "参照元フォルダ配下の全アセット（マテリアルに限らず）からの参照を調べ、" +
+            "テクスチャ検索フォルダ内でどこからも参照されていないテクスチャを検出します。検索はサブフォルダを含みます。\n\n" +
+            "除外サブフォルダ配下のアセットは参照の起点としてカウントしません" +
+            "（例: 参照元に A/ を指定し、A/Texture/ を除外すると、A/Texture/ 内のテクスチャは A/Texture/ 以外からの参照のみで判定されます）。";
+
+        private const string OptionsHelp =
+            "削除方法を選びます。\n" +
+            "・ゴミ箱へ移動: 削除したテクスチャは OS のゴミ箱へ移動します（復元可能）。\n" +
+            "・完全に削除: 削除したテクスチャは完全に削除されます（復元不可）。\n\n" +
+            "注意: 参照元フォルダ外のアセットが参照しているテクスチャも、ここでは未参照とみなされ削除対象になります。";
+
+        private const string ResultsHelp =
+            "「スキャン」を実行すると、未参照と判定されたテクスチャの一覧がここに表示されます。" +
+            "各行の「選択」でプロジェクトウィンドウ上の該当アセットをハイライトできます。";
+
         private void DrawFolderSettings()
         {
+            // テクスチャ検索フォルダ・参照元フォルダの変更を検知し、
+            // テクスチャ検索フォルダが参照元のサブフォルダなら自動で除外へ追加する。
+            EditorGUI.BeginChangeCheck();
+
             _textureFolder = (DefaultAsset)EditorGUILayout.ObjectField(
                 "テクスチャ検索フォルダ", _textureFolder, typeof(DefaultAsset), false);
             if (_textureFolder != null && GetValidFolderPath(_textureFolder) == null)
@@ -45,17 +66,12 @@ namespace dennokoworks.FolderCleaner
             GUILayout.Label("参照元フォルダ（複数指定可）", FolderCleanerTheme.CaptionStyle);
             DrawFolderList(_sourceFolders, "＋ 参照元フォルダを追加");
 
+            if (EditorGUI.EndChangeCheck())
+                AutoExcludeTextureFolderIfNeeded();
+
             EditorGUILayout.Space(6);
             GUILayout.Label("除外サブフォルダ（参照元としてカウントしない）", FolderCleanerTheme.CaptionStyle);
             DrawFolderList(_excludedFolders, "＋ 除外サブフォルダを追加");
-
-            EditorGUILayout.Space(4);
-            GUILayout.Label(
-                "参照元フォルダ配下の全アセット（マテリアルに限らず）からの参照を調べ、" +
-                "テクスチャ検索フォルダ内でどこからも参照されていないテクスチャを検出します。検索はサブフォルダを含みます。" +
-                "除外サブフォルダ配下のアセットは参照の起点としてカウントしません" +
-                "（例: 参照元に A/ を指定し、A/Texture/ を除外すると、A/Texture/ 内のテクスチャは A/Texture/ 以外からの参照のみで判定されます）。",
-                FolderCleanerTheme.SecondaryTextStyle);
         }
 
         /// <summary>DefaultAsset フォルダのリストを編集する UI（行ごとに削除ボタン、末尾に追加ボタン）。</summary>
@@ -95,10 +111,6 @@ namespace dennokoworks.FolderCleaner
                 _moveToTrash
                     ? "削除したテクスチャは OS のゴミ箱へ移動します（復元可能）。"
                     : "削除したテクスチャは完全に削除されます（復元不可）。",
-                FolderCleanerTheme.SecondaryTextStyle);
-            GUILayout.Label(
-                "注意: 参照元フォルダ外のアセットが参照しているテクスチャも、" +
-                "ここでは未参照とみなされ削除対象になります。",
                 FolderCleanerTheme.SecondaryTextStyle);
         }
 
@@ -178,10 +190,19 @@ namespace dennokoworks.FolderCleaner
         }
 
         // ─── 共通ヘルパー ──────────────────────────────────────────────────
-        private void DrawSection(string title, System.Action content)
+        private void DrawSection(string title, string helpTooltip, System.Action content)
         {
             GUILayout.BeginVertical(FolderCleanerTheme.CardStyle);
+
+            // 見出し行: 左にタイトル、右上に「？」（マウスオーバーで説明をツールチップ表示）
+            GUILayout.BeginHorizontal();
             GUILayout.Label(title, FolderCleanerTheme.SectionHeaderStyle);
+            GUILayout.FlexibleSpace();
+            if (!string.IsNullOrEmpty(helpTooltip))
+                GUILayout.Label(new GUIContent("？", helpTooltip),
+                    FolderCleanerTheme.HelpIconStyle, GUILayout.Width(18), GUILayout.Height(16));
+            GUILayout.EndHorizontal();
+
             DrawSeparator();
             content?.Invoke();
             GUILayout.EndVertical();

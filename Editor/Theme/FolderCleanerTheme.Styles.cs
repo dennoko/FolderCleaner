@@ -17,6 +17,7 @@ namespace dennokoworks.FolderCleaner
         public static GUIStyle ToggleSectionOffStyle { get; private set; } // トグル OFF 時の見出し
         public static GUIStyle SecondaryTextStyle    { get; private set; } // 説明文
         public static GUIStyle CaptionStyle          { get; private set; } // 補足・メタデータ
+        public static GUIStyle HelpIconStyle         { get; private set; } // セクション右上のヘルプ「？」
 
         // Buttons
         public static GUIStyle ActionButtonStyle     { get; private set; } // Primary Action
@@ -90,6 +91,17 @@ namespace dennokoworks.FolderCleaner
             CaptionStyle = new GUIStyle();
             CaptionStyle.fontSize = 9;
             FixAllTextColors(CaptionStyle, TextTertiary);
+
+            // セクション見出し右上のヘルプアイコン。マウスオーバーでツールチップを表示する。
+            HelpIconStyle = new GUIStyle();
+            HelpIconStyle.fontStyle = FontStyle.Bold;
+            HelpIconStyle.fontSize  = 11;
+            HelpIconStyle.alignment = TextAnchor.MiddleCenter;
+            HelpIconStyle.padding   = new RectOffset(0, 0, 0, 0);
+            HelpIconStyle.margin    = new RectOffset(0, 0, 0, 0);
+            HelpIconStyle.normal.background   = _texAccentCard;
+            HelpIconStyle.border    = new RectOffset(1, 1, 1, 1);
+            FixAllTextColors(HelpIconStyle, TextTertiary);
 
             // ── Toolbar Button ────────────────────────────────────────────────
 

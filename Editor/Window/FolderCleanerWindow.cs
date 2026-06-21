@@ -85,6 +85,39 @@ namespace dennokoworks.FolderCleaner
             return AssetDatabase.IsValidFolder(path) ? path : null;
         }
 
+        /// <summary>child が parent のサブフォルダ（同一フォルダは含まない）であれば true。</summary>
+        private static bool IsSubFolderOf(string child, string parent)
+        {
+            if (string.IsNullOrEmpty(child) || string.IsNullOrEmpty(parent)) return false;
+            return child.StartsWith(parent + "/", System.StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// テクスチャ検索フォルダがいずれかの参照元フォルダのサブフォルダであれば、
+        /// 自動で除外サブフォルダへ追加する（既に含まれている場合は何もしない）。
+        /// </summary>
+        private void AutoExcludeTextureFolderIfNeeded()
+        {
+            if (_textureFolder == null) return;
+            string texturePath = GetValidFolderPath(_textureFolder);
+            if (texturePath == null) return;
+
+            bool isSubFolder = false;
+            foreach (var source in _sourceFolders)
+            {
+                string sourcePath = GetValidFolderPath(source);
+                if (sourcePath != null && IsSubFolderOf(texturePath, sourcePath))
+                {
+                    isSubFolder = true;
+                    break;
+                }
+            }
+            if (!isSubFolder) return;
+
+            if (_excludedFolders.Contains(_textureFolder)) return;
+            _excludedFolders.Add(_textureFolder);
+        }
+
         /// <summary>リスト内の有効なフォルダパスを重複排除して返す。</summary>
         private static List<string> CollectValidFolderPaths(List<DefaultAsset> folders)
         {
