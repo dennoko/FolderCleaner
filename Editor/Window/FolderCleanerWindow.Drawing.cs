@@ -38,8 +38,8 @@ namespace dennokoworks.FolderCleaner
         private const string FolderSettingsHelp =
             "参照元フォルダ配下の全アセット（マテリアルに限らず）からの参照を調べ、" +
             "テクスチャ検索フォルダ内でどこからも参照されていないテクスチャを検出します。検索はサブフォルダを含みます。\n\n" +
-            "除外サブフォルダ配下のアセットは参照の起点としてカウントしません" +
-            "（例: 参照元に A/ を指定し、A/Texture/ を除外すると、A/Texture/ 内のテクスチャは A/Texture/ 以外からの参照のみで判定されます）。";
+            "除外サブフォルダ配下のアセットは参照の起点としてカウントしません。\n\n" +
+            "テクスチャ除外サブフォルダ内のテクスチャは削除候補（スキャン対象）から除外されます。";
 
         private const string OptionsHelp =
             "削除方法を選びます。\n" +
@@ -61,6 +61,10 @@ namespace dennokoworks.FolderCleaner
                 "テクスチャ検索フォルダ", _textureFolder, typeof(DefaultAsset), false);
             if (_textureFolder != null && GetValidFolderPath(_textureFolder) == null)
                 GUILayout.Label("※ テクスチャ検索フォルダにはフォルダを指定してください。", FolderCleanerTheme.SecondaryTextStyle);
+
+            EditorGUILayout.Space(6);
+            GUILayout.Label("テクスチャ除外サブフォルダ（削除候補から除外）", FolderCleanerTheme.CaptionStyle);
+            DrawFolderList(_excludedTextureFolders, "＋ 除外サブフォルダを追加");
 
             EditorGUILayout.Space(6);
             GUILayout.Label("参照元フォルダ（複数指定可）", FolderCleanerTheme.CaptionStyle);
@@ -123,19 +127,41 @@ namespace dennokoworks.FolderCleaner
                 return;
             }
 
-            GUILayout.Label($"未参照テクスチャ: {_unreferenced.Count} 件", FolderCleanerTheme.CaptionStyle);
-
             if (_unreferenced.Count == 0)
             {
+                GUILayout.Label("未参照テクスチャ: 0 件", FolderCleanerTheme.CaptionStyle);
                 GUILayout.Label("削除対象のテクスチャはありませんでした。", FolderCleanerTheme.SecondaryTextStyle);
                 return;
             }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"未参照テクスチャ: {_unreferenced.Count} 件 (選択: {_selectedPaths.Count} 件)", FolderCleanerTheme.CaptionStyle);
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("すべて選択", FolderCleanerTheme.MiniButtonStyle))
+            {
+                _selectedPaths.UnionWith(_unreferenced);
+            }
+            if (GUILayout.Button("すべて解除", FolderCleanerTheme.MiniButtonStyle))
+            {
+                _selectedPaths.Clear();
+            }
+            GUILayout.EndHorizontal();
+            EditorGUILayout.Space(2);
 
             _resultScrollPosition = EditorGUILayout.BeginScrollView(
                 _resultScrollPosition, GUILayout.Height(160));
             foreach (var path in _unreferenced)
             {
                 GUILayout.BeginHorizontal();
+
+                bool isSelected = _selectedPaths.Contains(path);
+                bool nextSelected = EditorGUILayout.Toggle(isSelected, GUILayout.Width(16));
+                if (nextSelected != isSelected)
+                {
+                    if (nextSelected) _selectedPaths.Add(path);
+                    else _selectedPaths.Remove(path);
+                }
+
                 GUILayout.Label(System.IO.Path.GetFileName(path), FolderCleanerTheme.SecondaryTextStyle);
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("選択", FolderCleanerTheme.MiniButtonStyle, GUILayout.Width(44)))
@@ -164,7 +190,7 @@ namespace dennokoworks.FolderCleaner
 
             EditorGUILayout.Space(4);
 
-            using (new EditorGUI.DisabledGroupScope(!_hasScanned || _unreferenced.Count == 0))
+            using (new EditorGUI.DisabledGroupScope(!_hasScanned || _selectedPaths.Count == 0))
             {
                 if (GUILayout.Button("削除", FolderCleanerTheme.SecondaryButtonStyle))
                     Delete();

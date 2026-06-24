@@ -22,12 +22,14 @@ namespace dennokoworks.FolderCleaner
 
         // ─── 設定 ────────────────────────────────────────────────────────────
         private DefaultAsset _textureFolder; // 削除候補テクスチャの検索フォルダ
-        private readonly List<DefaultAsset> _sourceFolders   = new List<DefaultAsset> { null }; // 参照元アセットの検索フォルダ（複数）
-        private readonly List<DefaultAsset> _excludedFolders = new List<DefaultAsset>();         // 参照元スキャンから除外するサブフォルダ（複数）
+        private readonly List<DefaultAsset> _sourceFolders           = new List<DefaultAsset> { null }; // 参照元アセットの検索フォルダ（複数）
+        private readonly List<DefaultAsset> _excludedFolders         = new List<DefaultAsset>();         // 参照元スキャンから除外するサブフォルダ（複数）
+        private readonly List<DefaultAsset> _excludedTextureFolders  = new List<DefaultAsset>();         // テクスチャ検索から除外するサブフォルダ（複数）
         private bool _moveToTrash = true;     // true=ゴミ箱へ移動 / false=完全削除
 
         // ─── スキャン結果 ────────────────────────────────────────────────────
         private readonly List<string> _unreferenced = new List<string>(); // 未参照テクスチャのパス
+        private readonly HashSet<string> _selectedPaths = new HashSet<string>(); // 削除対象としてチェックされたパス
         private bool _hasScanned;
 
         // ─── スクロール ──────────────────────────────────────────────────────
@@ -143,10 +145,15 @@ namespace dennokoworks.FolderCleaner
             }
 
             var excludedPaths = CollectValidFolderPaths(_excludedFolders);
-            var result = FolderTextureScanner.Scan(texturePath, sourcePaths, excludedPaths);
+            var excludedTexturePaths = CollectValidFolderPaths(_excludedTextureFolders);
+            var result = FolderTextureScanner.Scan(texturePath, sourcePaths, excludedPaths, excludedTexturePaths);
 
             _unreferenced.Clear();
             _unreferenced.AddRange(result.UnreferencedTexturePaths);
+            
+            _selectedPaths.Clear();
+            _selectedPaths.UnionWith(result.UnreferencedTexturePaths);
+
             _hasScanned = true;
             _resultScrollPosition = Vector2.zero;
             SetStatus(
@@ -157,18 +164,26 @@ namespace dennokoworks.FolderCleaner
         /// <summary>未参照テクスチャを削除する。</summary>
         private void Delete()
         {
-            if (_unreferenced.Count == 0) return;
+            var pathsToDelete = new List<string>();
+            foreach (var path in _unreferenced)
+            {
+                if (_selectedPaths.Contains(path))
+                    pathsToDelete.Add(path);
+            }
+
+            if (pathsToDelete.Count == 0) return;
 
             string mode = _moveToTrash ? "ゴミ箱へ移動" : "完全に削除";
             bool ok = EditorUtility.DisplayDialog(
                 "未参照テクスチャの削除",
-                $"{_unreferenced.Count} 件のテクスチャを{mode}します。よろしいですか？",
+                $"{pathsToDelete.Count} 件のテクスチャを{mode}します。よろしいですか？",
                 "実行", "キャンセル");
             if (!ok) return;
 
-            var result = TextureRemover.Remove(_unreferenced, _moveToTrash);
+            var result = TextureRemover.Remove(pathsToDelete, _moveToTrash);
 
             _unreferenced.Clear();
+            _selectedPaths.Clear();
             _hasScanned = false;
 
             if (result.AllSucceeded)

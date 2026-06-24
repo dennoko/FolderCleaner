@@ -19,15 +19,22 @@ namespace dennokoworks.FolderCleaner
         /// <param name="textureFolderPath">削除候補テクスチャの検索フォルダ（Assets 相対パス、サブフォルダ含む）。</param>
         /// <param name="sourceFolderPaths">参照元アセットの検索フォルダ一覧（Assets 相対パス、サブフォルダ含む）。</param>
         /// <param name="excludedFolderPaths">参照元スキャンの起点から除外するサブフォルダ一覧（Assets 相対パス、サブフォルダ含む）。null 可。</param>
+        /// <param name="excludedTextureFolderPaths">削除候補テクスチャの検索から除外するサブフォルダ一覧（Assets 相対パス、サブフォルダ含む）。null 可。</param>
         public static ScanResult Scan(
             string textureFolderPath,
             IReadOnlyList<string> sourceFolderPaths,
-            IReadOnlyList<string> excludedFolderPaths)
+            IReadOnlyList<string> excludedFolderPaths,
+            IReadOnlyList<string> excludedTextureFolderPaths)
         {
-            // 削除候補テクスチャ（サブフォルダ含む）
+            // 削除候補テクスチャ（サブフォルダ含む、ただし除外指定されたフォルダを除く）
             var texturePaths = new HashSet<string>();
             foreach (var guid in AssetDatabase.FindAssets("t:Texture", new[] { textureFolderPath }))
-                texturePaths.Add(AssetDatabase.GUIDToAssetPath(guid));
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (string.IsNullOrEmpty(path)) continue;
+                if (IsUnderAny(path, excludedTextureFolderPaths)) continue;
+                texturePaths.Add(path);
+            }
 
             // 参照元フォルダ配下の全アセット（型・シェーダー非依存）が参照するアセット集合を構築。
             // 複数フォルダが重複・入れ子でも HashSet と GUID 走査で自然に重複排除される。
