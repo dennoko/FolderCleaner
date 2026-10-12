@@ -43,6 +43,7 @@ namespace dennokoworks.FolderCleaner
         private Button _langBtn;
 
         private Label _sectionTargetTitle;
+        private Label _sectionTargetHelp;
         private Label _targetFolderLabel;
         private Label _targetFolderHint;
         private ObjectField _targetFolderField;
@@ -53,6 +54,7 @@ namespace dennokoworks.FolderCleaner
         private Button _addProtectedSubfolderBtn;
 
         private Label _sectionReferencesTitle;
+        private Label _sectionReferencesHelp;
         private Label _sourceFoldersTitle;
         private Label _sourceFoldersHint;
         private VisualElement _sourceFoldersContainer;
@@ -63,11 +65,13 @@ namespace dennokoworks.FolderCleaner
         private Button _addExcludedFolderBtn;
 
         private Label _sectionOptionsTitle;
+        private Label _sectionOptionsHelp;
         private Button _optionTrashBtn;
         private Button _optionDeleteBtn;
         private Label _optionHintLabel;
 
         private Label _sectionResultsTitle;
+        private Label _sectionResultsHelp;
         private Label _resultsPlaceholderLabel;
         private VisualElement _resultsContentContainer;
         private Label _resultsSummaryLabel;
@@ -168,6 +172,7 @@ namespace dennokoworks.FolderCleaner
             _langBtn = _root.Q<Button>("lang-button");
 
             _sectionTargetTitle = _root.Q<Label>("section-target-title");
+            _sectionTargetHelp = _root.Q<Label>("section-target-help");
             _targetFolderLabel = _root.Q<Label>("target-folder-label");
             _targetFolderHint = _root.Q<Label>("target-folder-hint");
             _targetFolderField = _root.Q<ObjectField>("target-folder-field");
@@ -178,6 +183,7 @@ namespace dennokoworks.FolderCleaner
             _addProtectedSubfolderBtn = _root.Q<Button>("add-protected-subfolder-btn");
 
             _sectionReferencesTitle = _root.Q<Label>("section-references-title");
+            _sectionReferencesHelp = _root.Q<Label>("section-references-help");
             _sourceFoldersTitle = _root.Q<Label>("source-folders-title");
             _sourceFoldersHint = _root.Q<Label>("source-folders-hint");
             _sourceFoldersContainer = _root.Q<VisualElement>("source-folders-container");
@@ -188,11 +194,13 @@ namespace dennokoworks.FolderCleaner
             _addExcludedFolderBtn = _root.Q<Button>("add-excluded-folder-btn");
 
             _sectionOptionsTitle = _root.Q<Label>("section-options-title");
+            _sectionOptionsHelp = _root.Q<Label>("section-options-help");
             _optionTrashBtn = _root.Q<Button>("option-trash-btn");
             _optionDeleteBtn = _root.Q<Button>("option-delete-btn");
             _optionHintLabel = _root.Q<Label>("option-hint-label");
 
             _sectionResultsTitle = _root.Q<Label>("section-results-title");
+            _sectionResultsHelp = _root.Q<Label>("section-results-help");
             _resultsPlaceholderLabel = _root.Q<Label>("results-placeholder-label");
             _resultsContentContainer = _root.Q<VisualElement>("results-content-container");
             _resultsSummaryLabel = _root.Q<Label>("results-summary-label");
@@ -431,6 +439,7 @@ namespace dennokoworks.FolderCleaner
             _versionReloadBtn.tooltip = FolderCleanerLoc.Tr("ReloadVersionTooltip");
 
             _sectionTargetTitle.text = FolderCleanerLoc.Tr("SectionTarget");
+            _sectionTargetHelp.tooltip = FolderCleanerLoc.Tr("HelpTarget");
             _targetFolderLabel.text = FolderCleanerLoc.Tr("TargetFolderLabel");
             _targetFolderHint.text = FolderCleanerLoc.Tr("TargetFolderHint");
             _protectedSubfoldersTitle.text = FolderCleanerLoc.Tr("ProtectedSubfoldersTitle");
@@ -438,6 +447,7 @@ namespace dennokoworks.FolderCleaner
             _addProtectedSubfolderBtn.text = FolderCleanerLoc.Tr("AddProtectedSubfolder");
 
             _sectionReferencesTitle.text = FolderCleanerLoc.Tr("SectionReferences");
+            _sectionReferencesHelp.tooltip = FolderCleanerLoc.Tr("HelpReferences");
             _sourceFoldersTitle.text = FolderCleanerLoc.Tr("SourceFoldersTitle");
             _sourceFoldersHint.text = FolderCleanerLoc.Tr("SourceFoldersHint");
             _addSourceFolderBtn.text = FolderCleanerLoc.Tr("AddSourceFolder");
@@ -446,11 +456,13 @@ namespace dennokoworks.FolderCleaner
             _addExcludedFolderBtn.text = FolderCleanerLoc.Tr("AddExcludedFolder");
 
             _sectionOptionsTitle.text = FolderCleanerLoc.Tr("SectionOptions");
+            _sectionOptionsHelp.tooltip = FolderCleanerLoc.Tr("HelpOptions");
             _optionTrashBtn.text = FolderCleanerLoc.Tr("OptionTrash");
             _optionDeleteBtn.text = FolderCleanerLoc.Tr("OptionDelete");
             _optionHintLabel.text = FolderCleanerLoc.Tr(_moveToTrash ? "OptionTrashHint" : "OptionDeleteHint");
 
             _sectionResultsTitle.text = FolderCleanerLoc.Tr("SectionResults");
+            _sectionResultsHelp.tooltip = FolderCleanerLoc.Tr("HelpResults");
             _selectAllBtn.text = FolderCleanerLoc.Tr("SelectAll");
             _deselectAllBtn.text = FolderCleanerLoc.Tr("DeselectAll");
 

@@ -199,3 +199,28 @@
 .dennoko-root .mini-action-btn:hover {
     color: var(--dennoko-text-primary);
 }
+
+/* セクション見出し行 (タイトル + 右端の「？」ヘルプ) */
+.dennoko-root .section-header-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* セクションヘルプ「？」 (マウスオーバーで説明をツールチップ表示) */
+.dennoko-root .section-help-icon {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    font-size: 10px;
+    -unity-text-align: middle-center;
+    color: var(--dennoko-text-tertiary);
+    border-color: var(--dennoko-outline);
+    border-width: 1px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.dennoko-root .section-help-icon:hover {
+    color: var(--dennoko-text-primary);
+    border-color: var(--dennoko-text-tertiary);
+}

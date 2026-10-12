@@ -16,7 +16,10 @@
 
         <!-- セクション 1: 整理対象テクスチャ -->
         <ui:VisualElement class="dennoko-card">
-            <ui:Label name="section-target-title" text="整理するテクスチャ（削除対象）" class="dennoko-section-title dennoko-card-header" />
+            <ui:VisualElement class="dennoko-card-header section-header-row">
+                <ui:Label name="section-target-title" text="整理するテクスチャ（削除対象）" class="dennoko-section-title" />
+                <ui:Label name="section-target-help" text="？" class="section-help-icon" />
+            </ui:VisualElement>
             
             <ui:Label name="target-folder-label" text="整理するフォルダ" class="dennoko-sub-title" />
             <ui:Label name="target-folder-hint" text="不要なテクスチャを検出・削除したいフォルダを指定します。" class="dennoko-hint" />
@@ -33,7 +36,10 @@
 
         <!-- セクション 2: 使用判定・保護基準 -->
         <ui:VisualElement class="dennoko-card">
-            <ui:Label name="section-references-title" text="使用判定（保護基準）" class="dennoko-section-title dennoko-card-header" />
+            <ui:VisualElement class="dennoko-card-header section-header-row">
+                <ui:Label name="section-references-title" text="使用判定（保護基準）" class="dennoko-section-title" />
+                <ui:Label name="section-references-help" text="？" class="section-help-icon" />
+            </ui:VisualElement>
 
             <ui:Label name="source-folders-title" text="使用元フォルダ (マテリアル・プレハブ等)" class="dennoko-sub-title" />
             <ui:Label name="source-folders-hint" text="ここにあるアセットが使用しているテクスチャは保護（保持）されます。" class="dennoko-hint" />
@@ -50,17 +56,23 @@
 
         <!-- セクション 3: 削除オプション -->
         <ui:VisualElement class="dennoko-card">
-            <ui:Label name="section-options-title" text="削除オプション" class="dennoko-section-title dennoko-card-header" />
-            <ui:VisualElement class="delete-options-group">
-                <ui:Button name="option-trash-btn" text="🗑 ゴミ箱へ移動（推奨）" class="delete-option-btn dennoko-button-active" />
-                <ui:Button name="option-delete-btn" text="⚠️ 完全に削除" class="delete-option-btn" />
+            <ui:VisualElement class="dennoko-card-header section-header-row">
+                <ui:Label name="section-options-title" text="削除オプション" class="dennoko-section-title" />
+                <ui:Label name="section-options-help" text="？" class="section-help-icon" />
             </ui:VisualElement>
-            <ui:Label name="option-hint-label" text="✓ 削除したテクスチャは OS のゴミ箱へ移動します（後から復元可能）。" class="dennoko-hint" />
+            <ui:VisualElement class="delete-options-group">
+                <ui:Button name="option-trash-btn" text="ゴミ箱へ移動（推奨）" class="delete-option-btn dennoko-button-active" />
+                <ui:Button name="option-delete-btn" text="完全に削除" class="delete-option-btn" />
+            </ui:VisualElement>
+            <ui:Label name="option-hint-label" text="削除したテクスチャは OS のゴミ箱へ移動します（後から復元可能）。" class="dennoko-hint" />
         </ui:VisualElement>
 
         <!-- セクション 4: スキャン結果 -->
         <ui:VisualElement class="dennoko-card">
-            <ui:Label name="section-results-title" text="スキャン結果" class="dennoko-section-title dennoko-card-header" />
+            <ui:VisualElement class="dennoko-card-header section-header-row">
+                <ui:Label name="section-results-title" text="スキャン結果" class="dennoko-section-title" />
+                <ui:Label name="section-results-help" text="？" class="section-help-icon" />
+            </ui:VisualElement>
             
             <ui:Label name="results-placeholder-label" text="「スキャン」を実行すると未参照テクスチャの一覧が表示されます。" class="dennoko-hint" />
             
