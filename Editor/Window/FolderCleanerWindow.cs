@@ -31,7 +31,9 @@ namespace dennokoworks.FolderCleaner
         // ─── スキャン結果 ────────────────────────────────────────────────────
         private readonly List<string> _unreferenced = new List<string>();
         private readonly HashSet<string> _selectedPaths = new HashSet<string>();
-        private bool _hasScanned;
+        // 結果リスト (readonly) はドメインリロードで消えるため、フラグだけ復元されて
+        // 未スキャンなのに「未参照なし」と表示されないよう直列化対象から外す。
+        [NonSerialized] private bool _hasScanned;
 
         // ─── UI 要素参照 ────────────────────────────────────────────────────
         private VisualElement _root;
@@ -323,7 +325,9 @@ namespace dennokoworks.FolderCleaner
                 field.RegisterValueChangedCallback(evt =>
                 {
                     list[index] = evt.newValue as DefaultAsset;
-                    AutoExcludeTextureFolderIfNeeded();
+                    // 自動除外は使用元フォルダの変更時のみ。除外リスト自身の編集で走らせると、
+                    // ユーザーが外した自動除外エントリが即座に再追加されてしまう。
+                    if (list == _sourceFolders) AutoExcludeTextureFolderIfNeeded();
                     UpdateActionButtonsState();
                 });
                 row.Add(field);

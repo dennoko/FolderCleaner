@@ -30,7 +30,8 @@ namespace dennokoworks.FolderCleaner
         // チェック先
         internal const string RepoOwner       = "dennoko";
         internal const string RepoName        = "FolderCleaner";
-        internal const string RepoBranch      = "main";
+        // リポジトリの既定ブランチは master ("main" は存在しない)
+        internal const string RepoBranch      = "master";
         internal const string VersionFilePath = "version.json";
 
         // SessionState キー
