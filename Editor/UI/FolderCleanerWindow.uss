@@ -1,0 +1,201 @@
+/* FolderCleaner 固有スタイルシート (規約: 全て .dennoko-root を前置) */
+
+/* 言語切替ボタン */
+.dennoko-root .dennoko-lang-button {
+    font-size: 11px;
+    height: 22px;
+    padding: 2px 8px;
+    min-width: 32px;
+    color: var(--dennoko-text-secondary);
+    background-color: var(--dennoko-surface-2);
+    border-color: var(--dennoko-outline);
+    border-width: 1px;
+    border-radius: 4px;
+    -unity-font-style: bold;
+}
+.dennoko-root .dennoko-lang-button:hover {
+    color: var(--dennoko-text-primary);
+    border-color: var(--dennoko-text-tertiary);
+}
+
+/* ヒント・注記テキスト */
+.dennoko-root .dennoko-hint {
+    font-size: 10px;
+    color: var(--dennoko-text-tertiary);
+    margin: 2px 0 6px 0;
+    white-space: normal;
+}
+
+/* 警告ヒントテキスト */
+.dennoko-root .dennoko-warning-hint {
+    font-size: 10px;
+    color: var(--dennoko-semantic-warning);
+    margin: 2px 0 6px 0;
+    white-space: normal;
+}
+
+/* 成功ヒントテキスト */
+.dennoko-root .dennoko-success-hint {
+    font-size: 10px;
+    color: var(--dennoko-semantic-success);
+    margin: 2px 0 6px 0;
+    white-space: normal;
+}
+
+/* サブ見出し */
+.dennoko-root .dennoko-sub-title {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: var(--dennoko-text-primary);
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+
+/* フォルダ行 (ObjectField + ✕ボタン) */
+.dennoko-root .folder-item-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.dennoko-root .folder-item-row .folder-field {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+.dennoko-root .folder-item-row .remove-folder-btn {
+    width: 24px;
+    height: 22px;
+    margin-left: 4px;
+    padding: 0;
+    font-size: 11px;
+    color: var(--dennoko-text-secondary);
+    background-color: var(--dennoko-surface-2);
+    border-color: var(--dennoko-outline);
+    border-width: 1px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+.dennoko-root .folder-item-row .remove-folder-btn:hover {
+    color: var(--dennoko-semantic-error);
+    border-color: var(--dennoko-semantic-error);
+}
+
+/* フォルダ追加ボタン */
+.dennoko-root .add-folder-btn {
+    height: 24px;
+    font-size: 11px;
+    margin-top: 2px;
+    margin-bottom: 6px;
+    color: var(--dennoko-text-secondary);
+    background-color: var(--dennoko-surface-2);
+    border-color: var(--dennoko-outline);
+    border-width: 1px;
+    border-radius: 4px;
+}
+.dennoko-root .add-folder-btn:hover {
+    color: var(--dennoko-text-primary);
+    border-color: var(--dennoko-text-tertiary);
+}
+
+/* 削除オプション切り替えボタングループ */
+.dennoko-root .delete-options-group {
+    flex-direction: row;
+    margin-bottom: 6px;
+}
+
+.dennoko-root .delete-option-btn {
+    flex-grow: 1;
+    height: 30px;
+    font-size: 11px;
+    margin: 0 3px;
+    border-radius: 4px;
+    color: var(--dennoko-text-secondary);
+    background-color: var(--dennoko-surface-2);
+    border-color: var(--dennoko-outline);
+    border-width: 1px;
+}
+
+/* 結果リスト */
+.dennoko-root .results-scroll-container {
+    max-height: 200px;
+    min-height: 80px;
+    background-color: var(--dennoko-surface-0);
+    border-color: var(--dennoko-outline);
+    border-width: 1px;
+    border-radius: 4px;
+    padding: 4px;
+    margin-top: 6px;
+}
+
+.dennoko-root .result-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 3px 4px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--dennoko-surface-1);
+}
+
+.dennoko-root .result-row:hover {
+    background-color: var(--dennoko-surface-2);
+}
+
+.dennoko-root .result-toggle {
+    margin: 0 4px 0 0;
+    padding: 0;
+    width: 18px;
+    flex-shrink: 0;
+}
+
+.dennoko-root .result-name {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    font-size: 11px;
+    color: var(--dennoko-text-secondary);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.dennoko-root .result-ping-btn {
+    width: 44px;
+    height: 20px;
+    font-size: 10px;
+    margin-left: 6px;
+    padding: 0;
+    color: var(--dennoko-text-secondary);
+    background-color: var(--dennoko-surface-1);
+    border-color: var(--dennoko-outline);
+    border-width: 1px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.dennoko-root .result-ping-btn:hover {
+    color: var(--dennoko-text-primary);
+    background-color: var(--dennoko-surface-2);
+}
+
+/* アクションボタン群 */
+.dennoko-root .results-actions-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.dennoko-root .mini-action-btn {
+    font-size: 10px;
+    height: 20px;
+    padding: 1px 6px;
+    margin-left: 4px;
+    color: var(--dennoko-text-secondary);
+    background-color: var(--dennoko-surface-2);
+    border-color: var(--dennoko-outline);
+    border-width: 1px;
+    border-radius: 3px;
+}
+.dennoko-root .mini-action-btn:hover {
+    color: var(--dennoko-text-primary);
+}

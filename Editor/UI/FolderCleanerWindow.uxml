@@ -1,0 +1,92 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+
+    <!-- ヘッダー (固定クローム flex-shrink: 0) -->
+    <ui:VisualElement class="dennoko-header">
+        <ui:VisualElement class="dennoko-header-titlegroup">
+            <ui:Label name="title-label" text="Folder Cleaner" class="dennoko-title" />
+            <ui:Label name="version-label" text="" class="dennoko-version-label" />
+            <ui:Button name="version-reload-button" text="↻" class="dennoko-version-reload-button" />
+        </ui:VisualElement>
+        <ui:Button name="lang-button" text="EN" class="dennoko-lang-button" />
+    </ui:VisualElement>
+    <ui:VisualElement class="dennoko-separator" />
+
+    <!-- メインスクロール領域 (ウィンドウ縮小時ここだけが縮む) -->
+    <ui:ScrollView class="dennoko-scroll">
+
+        <!-- セクション 1: 整理対象テクスチャ -->
+        <ui:VisualElement class="dennoko-card">
+            <ui:Label name="section-target-title" text="整理するテクスチャ（削除対象）" class="dennoko-section-title dennoko-card-header" />
+            
+            <ui:Label name="target-folder-label" text="整理するフォルダ" class="dennoko-sub-title" />
+            <ui:Label name="target-folder-hint" text="不要なテクスチャを検出・削除したいフォルダを指定します。" class="dennoko-hint" />
+            <uie:ObjectField name="target-folder-field" type="UnityEditor.DefaultAsset, UnityEditor" />
+            <ui:Label name="target-folder-error" text="※ フォルダアセットを指定してください。" class="dennoko-warning-hint" style="display: none;" />
+
+            <ui:VisualElement class="dennoko-separator" style="margin-top: 10px; margin-bottom: 6px;" />
+
+            <ui:Label name="protected-subfolders-title" text="保護するサブフォルダ（削除候補から除外）" class="dennoko-sub-title" />
+            <ui:Label name="protected-subfolders-hint" text="このサブフォルダ内のテクスチャは削除候補に含めません。" class="dennoko-hint" />
+            <ui:VisualElement name="protected-subfolders-container" />
+            <ui:Button name="add-protected-subfolder-btn" text="＋ 保護するサブフォルダを追加" class="add-folder-btn" />
+        </ui:VisualElement>
+
+        <!-- セクション 2: 使用判定・保護基準 -->
+        <ui:VisualElement class="dennoko-card">
+            <ui:Label name="section-references-title" text="使用判定（保護基準）" class="dennoko-section-title dennoko-card-header" />
+
+            <ui:Label name="source-folders-title" text="使用元フォルダ (マテリアル・プレハブ等)" class="dennoko-sub-title" />
+            <ui:Label name="source-folders-hint" text="ここにあるアセットが使用しているテクスチャは保護（保持）されます。" class="dennoko-hint" />
+            <ui:VisualElement name="source-folders-container" />
+            <ui:Button name="add-source-folder-btn" text="＋ 使用元フォルダを追加" class="add-folder-btn" />
+
+            <ui:VisualElement class="dennoko-separator" style="margin-top: 10px; margin-bottom: 6px;" />
+
+            <ui:Label name="excluded-folders-title" text="判定から除外するサブフォルダ" class="dennoko-sub-title" />
+            <ui:Label name="excluded-folders-hint" text="このフォルダからの参照はカウントしません（自己参照などの誤判定防止）。" class="dennoko-hint" />
+            <ui:VisualElement name="excluded-folders-container" />
+            <ui:Button name="add-excluded-folder-btn" text="＋ 判定から除外するサブフォルダを追加" class="add-folder-btn" />
+        </ui:VisualElement>
+
+        <!-- セクション 3: 削除オプション -->
+        <ui:VisualElement class="dennoko-card">
+            <ui:Label name="section-options-title" text="削除オプション" class="dennoko-section-title dennoko-card-header" />
+            <ui:VisualElement class="delete-options-group">
+                <ui:Button name="option-trash-btn" text="🗑 ゴミ箱へ移動（推奨）" class="delete-option-btn dennoko-button-active" />
+                <ui:Button name="option-delete-btn" text="⚠️ 完全に削除" class="delete-option-btn" />
+            </ui:VisualElement>
+            <ui:Label name="option-hint-label" text="✓ 削除したテクスチャは OS のゴミ箱へ移動します（後から復元可能）。" class="dennoko-hint" />
+        </ui:VisualElement>
+
+        <!-- セクション 4: スキャン結果 -->
+        <ui:VisualElement class="dennoko-card">
+            <ui:Label name="section-results-title" text="スキャン結果" class="dennoko-section-title dennoko-card-header" />
+            
+            <ui:Label name="results-placeholder-label" text="「スキャン」を実行すると未参照テクスチャの一覧が表示されます。" class="dennoko-hint" />
+            
+            <ui:VisualElement name="results-content-container" style="display: none;">
+                <ui:VisualElement class="results-actions-row">
+                    <ui:Label name="results-summary-label" text="未参照: 0 件 (削除選択: 0 件)" class="dennoko-sub-title" style="margin: 0;" />
+                    <ui:VisualElement style="flex-direction: row;">
+                        <ui:Button name="select-all-btn" text="すべて選択" class="mini-action-btn" />
+                        <ui:Button name="deselect-all-btn" text="すべて解除" class="mini-action-btn" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:ScrollView name="results-scroll" class="results-scroll-container" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:ScrollView>
+
+    <ui:VisualElement class="dennoko-separator" />
+
+    <!-- フッター (固定クローム flex-shrink: 0) -->
+    <ui:VisualElement class="dennoko-card dennoko-footer">
+        <ui:Button name="scan-btn" text="スキャン" class="dennoko-button-primary" />
+        <ui:Button name="delete-btn" text="削除を実行" class="dennoko-button-secondary" style="margin-top: 4px;" />
+    </ui:VisualElement>
+
+    <!-- ステータスバー -->
+    <ui:Label name="status-label" text="Ready" class="dennoko-status" />
+
+</ui:UXML>
