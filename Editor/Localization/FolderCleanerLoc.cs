@@ -108,20 +108,10 @@ namespace dennokoworks.FolderCleaner
             { "PingAsset", "選択" },
 
             // セクションヘルプ（見出し右の「？」のツールチップ）
-            { "HelpTarget", "このフォルダ内（サブフォルダ含む）のテクスチャのうち、使用元フォルダのどのアセットからも参照されていないものを削除候補として検出します。
-
-保護するサブフォルダ内のテクスチャは削除候補から除外されます。" },
-            { "HelpReferences", "使用元フォルダ配下の全アセット（マテリアルに限らず、サブフォルダ含む）からの参照を調べます。
-
-判定から除外するサブフォルダ配下のアセットは、参照の起点としてカウントしません。整理するフォルダが使用元フォルダのサブフォルダの場合は自動で追加されます。
-
-注意: 使用元フォルダ外のアセットが参照しているテクスチャも未参照とみなされ、削除対象になります。" },
-            { "HelpOptions", "削除方法を選びます。
-・ゴミ箱へ移動: 削除したテクスチャは OS のゴミ箱へ移動します（復元可能）。
-・完全に削除: 削除したテクスチャは完全に削除されます（復元不可）。" },
-            { "HelpResults", "「スキャン」を実行すると、未参照と判定されたテクスチャの一覧がここに表示されます。チェックを外したテクスチャは削除されません。
-
-各行の「選択」で Project ウィンドウ上の該当アセットをハイライトできます。" },
+            { "HelpTarget", "このフォルダ内（サブフォルダ含む）のテクスチャのうち、使用元フォルダのどのアセットからも参照されていないものを削除候補として検出します。\n\n保護するサブフォルダ内のテクスチャは削除候補から除外されます。" },
+            { "HelpReferences", "使用元フォルダ配下の全アセット（マテリアルに限らず、サブフォルダ含む）からの参照を調べます。\n\n判定から除外するサブフォルダ配下のアセットは、参照の起点としてカウントしません。整理するフォルダが使用元フォルダのサブフォルダの場合は自動で追加されます。\n\n注意: 使用元フォルダ外のアセットが参照しているテクスチャも未参照とみなされ、削除対象になります。" },
+            { "HelpOptions", "削除方法を選びます。\n・ゴミ箱へ移動: 削除したテクスチャは OS のゴミ箱へ移動します（復元可能）。\n・完全に削除: 削除したテクスチャは完全に削除されます（復元不可）。" },
+            { "HelpResults", "「スキャン」を実行すると、未参照と判定されたテクスチャの一覧がここに表示されます。チェックを外したテクスチャは削除されません。\n\n各行の「選択」で Project ウィンドウ上の該当アセットをハイライトできます。" },
 
             // フッター
             { "ButtonScan", "スキャン" },
@@ -190,20 +180,10 @@ namespace dennokoworks.FolderCleaner
             { "PingAsset", "Ping" },
 
             // Section help (tooltip of the "?" next to each section title)
-            { "HelpTarget", "Textures in this folder (including subfolders) that are not referenced by any asset in the reference sources are detected as deletion candidates.
-
-Textures in protected subfolders are excluded from the candidates." },
-            { "HelpReferences", "References from every asset under the reference sources (not only materials, including subfolders) are checked.
-
-Assets under excluded subfolders are not used as reference origins. If the target folder is a subfolder of a reference source, it is added here automatically.
-
-Note: textures referenced only by assets outside the reference sources are also treated as unreferenced and become deletion targets." },
-            { "HelpOptions", "Choose how textures are deleted.
-- Move to Trash: moved to the OS trash (recoverable).
-- Delete Permanently: removed permanently (cannot be recovered)." },
-            { "HelpResults", "After running 'Scan', textures judged as unreferenced are listed here. Unchecked textures will not be deleted.
-
-Use 'Ping' on each row to highlight the asset in the Project window." },
+            { "HelpTarget", "Textures in this folder (including subfolders) that are not referenced by any asset in the reference sources are detected as deletion candidates.\n\nTextures in protected subfolders are excluded from the candidates." },
+            { "HelpReferences", "References from every asset under the reference sources (not only materials, including subfolders) are checked.\n\nAssets under excluded subfolders are not used as reference origins. If the target folder is a subfolder of a reference source, it is added here automatically.\n\nNote: textures referenced only by assets outside the reference sources are also treated as unreferenced and become deletion targets." },
+            { "HelpOptions", "Choose how textures are deleted.\n- Move to Trash: moved to the OS trash (recoverable).\n- Delete Permanently: removed permanently (cannot be recovered)." },
+            { "HelpResults", "After running 'Scan', textures judged as unreferenced are listed here. Unchecked textures will not be deleted.\n\nUse 'Ping' on each row to highlight the asset in the Project window." },
 
             // Footer
             { "ButtonScan", "Scan" },
