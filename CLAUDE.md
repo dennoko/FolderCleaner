@@ -5,39 +5,43 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 FolderCleaner is a Unity Editor extension (targets Unity 2022.3+) that deletes textures in a
-designated folder that are not referenced by any asset under a designated source folder. Reference
+designated folder that are not referenced by any asset under designated source folders. Reference
 detection is shader-agnostic — it works for textures referenced through materials of any shader.
 
 This package lives under `Assets/dennokoworks/FolderCleaner` inside a host VRChat/Unity project.
 There is no standalone build/lint/test tooling: code is compiled by the Unity Editor on import, and
-the tool is exercised from the menu **dennokoworks > Folder Cleaner**. The requirements spec is in
-[Docs/Impl/requirements.md](Docs/Impl/requirements.md) (Japanese).
+the tool is exercised from the menu **dennokoworks > Folder Cleaner**.
 
 ## Architecture
 
 All code is editor-only and sits in `namespace dennokoworks.FolderCleaner` under [Editor/](Editor/).
-The design deliberately keeps scan/delete logic UI-independent so it can be reasoned about and
-tested in isolation from IMGUI.
 
 - **Core (pure logic, no UI):**
-  - [Editor/Core/FolderTextureScanner.cs](Editor/Core/FolderTextureScanner.cs) — `Scan(textureFolderPath, sourceFolderPaths, excludedFolderPaths)` returns a `ScanResult`. It collects all `t:Texture` under the texture folder, then walks `AssetDatabase.GetDependencies(path, recursive: true)` for every asset under the (multiple) source folders to build the referenced set. Recursion is what makes it shader-agnostic (prefab → material → texture is followed transitively). `GetDependencies` includes the asset itself, so self-references are excluded. Assets under `excludedFolderPaths` are skipped as scan *origins* (but can still be marked referenced transitively from a non-excluded asset) — this lets you point the source at `A/` while excluding `A/Texture/`.
+  - [Editor/Core/FolderTextureScanner.cs](Editor/Core/FolderTextureScanner.cs) — `Scan(textureFolderPath, sourceFolderPaths, excludedFolderPaths, excludedTexturePaths)` returns a `ScanResult`. It collects all `t:Texture` under the texture folder, then walks `AssetDatabase.GetDependencies(path, recursive: true)` for every asset under the (multiple) source folders to build the referenced set. Recursion is what makes it shader-agnostic (prefab → material → texture is followed transitively). Assets under `excludedFolderPaths` are skipped as scan *origins*, and textures under `excludedTexturePaths` are excluded from deletion candidates.
   - [Editor/Core/TextureRemover.cs](Editor/Core/TextureRemover.cs) — `Remove(paths, moveToTrash)` returns a `RemoveResult`. Wraps deletion in `StartAssetEditing`/`StopAssetEditing` + `Refresh`, choosing `MoveAssetToTrash` vs `DeleteAsset`.
-- **Window (UI, partial class `FolderCleanerWindow : EditorWindow`):**
-  - [Editor/Window/FolderCleanerWindow.cs](Editor/Window/FolderCleanerWindow.cs) — state, `[MenuItem]` registration, `OnGUI` entry point, and the `Scan`/`Delete`/`SetStatus` business logic that bridges UI to Core.
-  - [Editor/Window/FolderCleanerWindow.Drawing.cs](Editor/Window/FolderCleanerWindow.Drawing.cs) — all IMGUI drawing (`DrawHeader`/`DrawSettingsArea`/`DrawFooter`/`DrawStatusBar`).
-- **Theme (partial class `FolderCleanerTheme`):** [Editor/Theme/](Editor/Theme/) — `FolderCleanerTheme.cs` (colors, texture/style lifecycle), `.Styles.cs` (GUIStyle definitions), `.EditorOverride.cs` (Push/Pop overrides of built-in `EditorStyles` for light/dark parity).
+- **UI (UI Toolkit, dennokoworks floating design):**
+  - [Editor/UI/FolderCleanerWindow.uxml](Editor/UI/FolderCleanerWindow.uxml) — UXML layout tree (Header, ScrollView cards, Footer, Status bar).
+  - [Editor/UI/DennokoTheme.uss](Editor/UI/DennokoTheme.uss) — Base theme USS stylesheet.
+  - [Editor/UI/FolderCleanerWindow.uss](Editor/UI/FolderCleanerWindow.uss) — Tool-specific custom stylesheet.
+  - [Editor/UI/DennokoUIFont.cs](Editor/UI/DennokoUIFont.cs) — Meiryo SDF font management with full Japanese text warmup.
+- **Window:**
+  - [Editor/Window/FolderCleanerWindow.cs](Editor/Window/FolderCleanerWindow.cs) — `CreateGUI()` entry point, element binding, dynamic list management, and bridging UI events to Core logic.
+- **Version Check:**
+  - [Editor/VersionCheck/DennokoVersionChecker.cs](Editor/VersionCheck/DennokoVersionChecker.cs) — GitHub version checking utility.
+  - [Editor/VersionCheck/FolderCleanerVersion.cs](Editor/VersionCheck/FolderCleanerVersion.cs) — Tool version cache and background updater.
+  - [version.json](version.json) — Current release version metadata.
+- **Localization:**
+  - [Editor/Localization/FolderCleanerLoc.cs](Editor/Localization/FolderCleanerLoc.cs) — Japanese and English string dictionary and language switcher.
 
 ## UI / theme conventions (dennokoworks floating design)
 
-The window UI follows the dennokoworks design system. When implementing or modifying any
-EditorWindow/CustomEditor UI, **use the `dennokoworks_color_schema` skill** — it carries the color
-palette, templates, and IMGUI techniques. The hard rules that this codebase already follows:
+The window UI follows the dennokoworks design system (UI Toolkit / UXML / USS):
 
-1. `OnGUI` must call `FolderCleanerTheme.Initialize()` then `PushEditorTheme()`, and `PopEditorTheme()` in a `finally`. Fill the background with `EditorGUI.DrawRect(..., Surface0)` first.
-2. Build every `GUIStyle` from `new GUIStyle()` — never inherit from `EditorStyles.*` or `GUI.skin.*`. Inherited styles leak light-mode colors into unset states and break on theme switch. (`FixAllTextColors`/`FixAllStateBackgrounds` in `FolderCleanerTheme.cs` exist to force all 8 states explicitly.)
-3. Guard cached textures with the Unity null check `if (!_tex) _tex = MakeTex(...)`; `_initialized` resets on domain reload so textures rebuild automatically. `DisposeTextures()` also rebuilds when the pro-skin flag flips.
+1. Root element must have `.dennoko-root` class and call `DennokoUIFont.Apply(root)`.
+2. All custom styles must be prefixed with `.dennoko-root` (specificity 0,2,0) and use `--dennoko-*` color variables.
+3. Active/selected buttons must use `.dennoko-button-active` (blue border).
+4. Textures/labels support bilingual switching (JA/EN) via `FolderCleanerLoc`.
 
 ## Conventions
 
-- Code comments and user-facing strings are in Japanese; keep that consistent when editing.
-- `.gitignore` ignores `*.meta`. Unity regenerates `.meta` files on import.
+- Code comments and default user-facing strings are in Japanese, with English localization support.
